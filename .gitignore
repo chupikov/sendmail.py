@@ -3,3 +3,4 @@ __pycache__
 *.eml
 *.php
 /config.json
+/php-apache2.json
