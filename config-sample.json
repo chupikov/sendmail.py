@@ -1,0 +1,28 @@
+[
+  {
+    "name": "Test FileSystem",
+    "class": "FilesystemProcessor",
+    "enabled" : false,
+    "directory" : "./test-1/mail",
+    "num_file" : "./test-1/num",
+    "name_length" : 8
+  },
+  {
+    "name": "FileSystem: /var/mail/sendmail/new",
+    "class": "FilesystemProcessor",
+    "enabled" : true,
+    "directory" : "/var/mail/sendmail/new",
+    "num_file" : "/var/mail/sendmail/num",
+    "extension" : ".eml",
+    "number": 0,
+    "name_length" : 4
+  },
+  {
+    "name": "Notification",
+    "class": "NotifyProcessor",
+    "enabled" : false,
+    "icon_name": "mail-message-new",
+    "title_template": "{appname} {name}",
+    "text_template": "{subject}"
+  }
+]
