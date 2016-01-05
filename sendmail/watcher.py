@@ -5,6 +5,7 @@ import signal
 import notify2
 import argparse
 import pyinotify
+import subprocess
 from gi.repository import Gtk as gtk
 from gi.repository import AppIndicator3 as appindicator
 from multiprocessing import Process
@@ -70,11 +71,19 @@ class FilesystemWatcher():
 
     def build_menu(self):
         menu = gtk.Menu()
+        for dir in self.directories:
+            item = gtk.MenuItem(os.path.abspath(dir))
+            item.connect('activate', self.open_directory)
+            menu.append(item)
         item_quit = gtk.MenuItem('Quit')
         item_quit.connect('activate', self.application_quit)
         menu.append(item_quit)
         menu.show_all()
         return menu
+
+    def open_directory(self, source):
+        print('Open dir: {}'.format(source.get_label()))
+        subprocess.call(['exo-open', '--launch', 'FileManager', source.get_label()])
 
     def application_quit(self, source):
         self.notifier_loop_process.terminate()
