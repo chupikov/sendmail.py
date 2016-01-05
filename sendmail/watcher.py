@@ -6,9 +6,10 @@ import notify2
 import argparse
 import pyinotify
 import subprocess
+from multiprocessing import Process
+from email import message_from_string
 from gi.repository import Gtk as gtk
 from gi.repository import AppIndicator3 as appindicator
-from multiprocessing import Process
 
 
 class FilesystemWatcher():
@@ -51,13 +52,14 @@ class FilesystemWatcher():
         notify2.init(self.name)
         self.watch_manager = pyinotify.WatchManager()
         handler = FilesystemEventHandler()
+        handler.notification_icon = self.notification_icon
         self.notifier = pyinotify.Notifier(self.watch_manager, handler)
 
         for directory in self.directories:
             if not os.path.isdir(directory):
                 sys.stderr.write("ERROR! Directory not found: {}\n".format(directory))
                 sys.exit(1)
-            self.watchers.append(self.watch_manager.add_watch(directory, pyinotify.IN_CREATE, rec=True))
+            self.watchers.append(self.watch_manager.add_watch(directory, pyinotify.IN_MODIFY, rec=True))
 
     def load_config(self, filename):
         print('Load config "{}"...'.format(filename))
@@ -104,10 +106,21 @@ class FilesystemWatcher():
 
 
 class FilesystemEventHandler(pyinotify.ProcessEvent):
-    def process_IN_CREATE(self, event):
-        print('Created: ', event.pathname)
-        n = notify2.Notification('Sendmail File Created',
-                'New message: {}'.format(event.pathname),
-                'mail-message-new'
+    notification_icon = 'mail-message-new'
+
+    def process_IN_MODIFY(self, event):
+        if not os.path.isfile(event.pathname):
+            return
+        print('New message: ', event.pathname)
+
+        f = open(event.pathname, encoding='UTF-8')
+        data = f.read()
+        f.close()
+
+        message = message_from_string(data)
+
+        n = notify2.Notification('Sendmail.py: {}'.format(event.pathname),
+                "Subject: {}\nFrom: {}".format(message.get("Subject"), message.get("From")),
+                self.notification_icon
         )
         n.show()
