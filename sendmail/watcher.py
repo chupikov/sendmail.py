@@ -1,9 +1,10 @@
 import os
 import sys
-import notify2
-import pyinotify
-import argparse
+import json
 import signal
+import notify2
+import argparse
+import pyinotify
 from gi.repository import Gtk as gtk
 from gi.repository import AppIndicator3 as appindicator
 from multiprocessing import Process
@@ -34,9 +35,15 @@ class FilesystemWatcher():
         if args.notifyicon:
             self.notification_icon = args.notifyicon
 
+        if args.config:
+            filename = args.config
+            self.load_config(filename)
+
         if args.dir:
+            print("Add: {}({})".format('--dir', args.dir))
             self.directories.append(args.dir)
-        else:
+
+        if len(self.directories) == 0:
             sys.stderr.write("ERROR! Directory not specified.\n")
             sys.exit(1)
 
@@ -50,6 +57,16 @@ class FilesystemWatcher():
                 sys.stderr.write("ERROR! Directory not found: {}\n".format(directory))
                 sys.exit(1)
             self.watchers.append(self.watch_manager.add_watch(directory, pyinotify.IN_CREATE, rec=True))
+
+    def load_config(self, filename):
+        print('Load config "{}"...'.format(filename))
+        f = open(filename, encoding="UTF-8")
+        config = json.loads(f.read())
+        f.close()
+        for conf in config:
+            if conf['class'] == 'FilesystemProcessor' and conf['enabled']:
+                print("Add: {}({})".format(conf['name'], conf['directory']))
+                self.directories.append(conf['directory'])
 
     def build_menu(self):
         menu = gtk.Menu()
@@ -79,7 +96,7 @@ class FilesystemWatcher():
 
 class FilesystemEventHandler(pyinotify.ProcessEvent):
     def process_IN_CREATE(self, event):
-        print('Creating: ', event.pathname)
+        print('Created: ', event.pathname)
         n = notify2.Notification('Sendmail File Created',
                 'New message: {}'.format(event.pathname),
                 'mail-message-new'
