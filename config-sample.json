@@ -3,19 +3,21 @@
     "name": "Test FileSystem",
     "class": "FilesystemProcessor",
     "enabled" : true,
-    "directory" : "./test-1/mail",
-    "num_file" : "./test-1/num",
+    "directory" : "../test-1/mail",
+    "num_file" : "../test-1/num",
     "name_length" : 8
   },
   {
-    "name": "FileSystem: /var/mail/sendmail/new",
-    "class": "FilesystemProcessor",
-    "enabled" : false,
-    "directory" : "/var/mail/sendmail/new",
-    "num_file" : "/var/mail/sendmail/num",
-    "extension" : ".eml",
-    "number": 0,
-    "name_length" : 4
+    "name": "SMTP Server",
+    "class": "SmtpProcessor",
+    "enabled" : true,
+    "username": "SMTP_USERNAME",
+    "password": "SMTP_PASSWORD",
+    "host": "SMTP_SERVER",
+    "port": 25,
+    "to_address": "TO_ADDRESS",
+    "from_address": false,
+    "starttls": true
   },
   {
     "name": "Notification",
