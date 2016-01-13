@@ -44,22 +44,23 @@ class MailProcessorFactory:
         directory = os.path.dirname(os.path.realpath(__file__)) + "/processors"
         regex = re.compile("(.+Processor)\.py")
         print("Processors Directory: " + directory)
-        l = os.listdir(directory)
-        for line in l:
-            m = regex.match(line)
-            if m is None:
-                continue
-            name = m.group(1)
-            pack = self.package + name
-            print("> {} :: {} -- from {} import {}".format(line, name, pack, name))
-            mod = __import__(pack, fromlist=[name])
-            o = getattr(mod, name)
-            self.mods[name] = o
         for conf in config:
             name = conf["name"]
             clazz = conf["class"]
             if not conf["enabled"]:
                 continue
+            moduleExists = False
+            try:
+                if self.mods[clazz]:
+                    moduleExists = True
+            except:
+                pass
+            if not moduleExists:
+                pack = self.package + clazz
+                print("> {} -- from {} import {}".format(clazz, pack, clazz))
+                mod = __import__(pack, fromlist=[clazz])
+                o = getattr(mod, clazz)
+                self.mods[clazz] = o
             print("Add: {}({})".format(name, clazz))
             self.list[name] = self.mods[clazz](conf)
 
@@ -76,4 +77,3 @@ class MailProcessorFactory:
                 return None
         except Exception:
             return None
-
