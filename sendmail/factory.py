@@ -23,7 +23,7 @@ from sendmail.processors.abstractprocessor import AbstractProcessor
 __author__ = "Yaroslav Chupikov"
 __copyright__ = "Copyright 2016, Celtic Logic Limited"
 __license__ = "GPL"
-__version__ = "0.3"
+__version__ = "0.4"
 __email__ = "yaroslav@mirasoltek.com"
 __status__ = "Production"
 

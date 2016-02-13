@@ -22,7 +22,7 @@ from email.message import Message
 __author__ = "Yaroslav Chupikov"
 __copyright__ = "Copyright 2016, Celtic Logic Limited"
 __license__ = "GPL"
-__version__ = "0.3"
+__version__ = "0.5"
 __email__ = "yaroslav@mirasoltek.com"
 __status__ = "Production"
 
@@ -50,9 +50,16 @@ class AbstractProcessor():
                 if configurable:
                     try:
                         setattr(self, name, conf[name])
-                        print("    {}.{} = '{}' ('{}')".format(self.__class__.__name__, name, conf[name], value))
+                        if name not in ["password", "apikey"]:
+                            print("    {}.{} = '{}' ('{}')".format(self.__class__.__name__, name, conf[name], value))
                     except KeyError:
                         pass
+
+    def extractContent(self, message: Message):
+        content = message.get_payload();
+        if type(content) is list:
+            content = ','.join(str(v) for v in content)
+        return content
 
     @abc.abstractmethod
     def process(self, message: Message):
