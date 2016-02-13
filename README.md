@@ -19,6 +19,7 @@ Application provides two applications:
   1. **FilesystemProcessor** - saves messages to files in the specified directory.
   2. **NotifyProcessor** - displays desktop notifications when message sent. Does not works if sendmail.py used in the Apache2 environment; in this case **watch.py** need to be used.
   3. **SmtpProcessor** - sends messages using SMTP server.
+  4. **MandrillProcessor** - sends messages using [Mandrill API](https://mandrillapp.com/api/docs/index.python.html) (you need to create [Mandrill API key](https://mandrillapp.com/settings/index)).
 2. **watch.py** - watches filesystems and displays desktop notifications when new message file created. Active Watcher displays icon in the system tray area.
  
 ## Installation and usage

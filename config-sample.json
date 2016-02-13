@@ -20,6 +20,15 @@
     "starttls": true
   },
   {
+    "name": "Mandrill",
+    "class": "MandrillProcessor",
+    "enabled": true,
+    "apikey": "MANDRILL_API_KEY",
+    "to_address": "TO_ADDRESS",
+    "from_address": "FROM_ADDRESS",
+    "from_name": "FROM_NAME"
+  },
+  {
     "name": "Notification",
     "class": "NotifyProcessor",
     "enabled" : true,
